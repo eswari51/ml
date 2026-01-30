@@ -1,0 +1,28 @@
+# Import required libraries
+import pandas as pd
+import numpy as np
+
+# Step 0: Load dataset
+df = pd.read_csv(r"C:\Users\student\Downloads\exp2 (1).csv")
+print("Original DataFrame:\n", df)
+
+# Step 1: Attribute Selection
+df_selected = df[['A', 'B']].copy()
+print("\nAfter Attribute Selection:\n", df_selected)
+
+# Step 2: Handling Missing Values
+# Replace missing values with the mean of the column
+df_selected['A'] = df_selected['A'].fillna(df_selected['A'].mean())
+df_selected['B'] = df_selected['B'].fillna(df_selected['B'].mean())
+print("\nAfter Handling Missing Values:\n", df_selected)
+
+# Step 3: Discretization (Binning)
+# Convert continuous columns into categories: low, high
+df_selected['A_bin'] = pd.cut(df_selected['A'], bins=[-np.inf, 10, np.inf], labels=['low','high'])
+df_selected['B_bin'] = pd.cut(df_selected['B'], bins=[-np.inf, 4, np.inf], labels=['low','high'])
+print("\nAfter Discretization:\n", df_selected)
+
+# Step 4: Elimination of Outliers (3-sigma rule)
+# Only for column 'A' (can apply similarly for 'B')
+df_cleaned = df_selected[np.abs(df_selected['A'] - df_selected['A'].mean()) <= (3 * df_selected['A'].std())]
+print("\nCleaned DataFrame (Outliers Removed):\n", df_cleaned)
